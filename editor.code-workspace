@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../web-component-designer-demo"
+		}
+	],
+	"settings": {
+		"jestrunner.debugOptions": {
+			"runtimeArgs": [
+				"--experimental-vm-modules", "--enable-source-maps"
+			]
+		}
+	}
+}

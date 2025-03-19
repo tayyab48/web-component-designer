@@ -1,0 +1,24 @@
+{
+  "description": "web-component-designer addon: Widgets and Services for creating a ZPL Designer",
+  "name": "@node-projects/web-component-designer-zpl",
+  "version": "0.1.18",
+  "type": "module",
+  "main": "./dist/index.js",
+  "author": "jochen.kuehner@gmx.de",
+  "license": "MIT",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "tsc",
+    "link": "npm link",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@node-projects/base-custom-webcomponent": ">=0.27.8",
+    "@node-projects/web-component-designer": ">=0.1.224",
+    "jsbarcode": "^3.11.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/node-projects/web-component-designer.git"
+  }
+}
