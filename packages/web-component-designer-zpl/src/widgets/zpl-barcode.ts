@@ -22,6 +22,7 @@ export class ZplBarcode extends BaseCustomWebComponentConstructorAppend {
     public width: number;
     public ratio: number;
     public height: number;
+    public displayValue: boolean;
 
     private _barcode: HTMLDivElement;
     private _barcodeOptions: BarcodeOptions;
@@ -32,6 +33,7 @@ export class ZplBarcode extends BaseCustomWebComponentConstructorAppend {
         width: Number,
         ratio: Number,
         height: Number,
+        displayValue: Boolean
     }
 
     constructor() {
@@ -78,6 +80,7 @@ export class ZplBarcode extends BaseCustomWebComponentConstructorAppend {
         this._barcodeOptions.height = this.height;
         this._barcodeOptions.margin = 0;
         this._barcodeOptions.background = 'transparent';
+        this._barcodeOptions.displayValue = this.displayValue;
     }
 
     public createZpl() {

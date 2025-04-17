@@ -98,7 +98,8 @@ export class ZplParserService implements IHtmlParserService, IHtmlWriterService 
                     designItems.push(DesignItem.createDesignItemFromInstance(comment, serviceContainer, instanceServiceContainer));
                     break;
                 case "AA": //Ax x=fontname
-                case "A0": {
+                case "A0":
+                case "AB":  {
                     fontName = command[1];
                     rotation = getSetValue(fields[0], 'N');
                     let defaultFontWidth = 15;
