@@ -1,5 +1,5 @@
 import { BaseCustomWebComponentConstructorAppend, LazyLoader, css, html } from "@node-projects/base-custom-webcomponent";
-import { BarcodeFormat, BarcodeOptions } from "../jsBarcodeOptions.js";
+import { BarcodeFormat, BarcodeOptions, BarCodeValueDisplay } from "../jsBarcodeOptions.js";
 import { getZplCoordinates } from "../zplHelper.js";
 import QRCode from "../qr.js";
 
@@ -81,30 +81,40 @@ export class ZplBarcode extends BaseCustomWebComponentConstructorAppend {
         this._barcodeOptions.margin = 0;
         this._barcodeOptions.background = 'transparent';
         this._barcodeOptions.displayValue = this.displayValue;
+
     }
 
     public createZpl() {
         let zpl = "";
         zpl += getZplCoordinates(this, 0);
-        if (this.type != BarcodeFormat.QR)
-            zpl += "^BY" + this.width + "," + this.ratio;
+        const humanReadable = this.displayValue ? BarCodeValueDisplay.Yes : BarCodeValueDisplay.No;
+
+        if (this.type !== BarcodeFormat.QR) {
+            zpl += `^BY${this.width},${this.ratio}`;
+        }
+
         switch (this.type) {
             case BarcodeFormat.CODE128:
-                zpl += "^BCN," + this.height + ",Y,N,Y,N";
+                zpl += `^BCN,${this.height},${humanReadable},N,Y,N`;
                 break;
+
             case BarcodeFormat.EAN13:
-                zpl += "^BCN," + this.height + ",Y,N";
+                zpl += `^BEN,${this.height},${humanReadable},N`;
                 break;
+
             case BarcodeFormat.QR:
-                zpl += "^BQN,2," + this.height + "";
+                zpl += `^BQN,2,${this.height}`;
                 break;
         }
 
         zpl += "^FD";
-        if (this.type == BarcodeFormat.QR) 
-            zpl += 'QA,'; // bar code configuration prefix
+        if (this.type === BarcodeFormat.QR) {
+            zpl += "QA,";
+        }
+
         zpl += this.content;
         zpl += "^FS";
+
         return zpl;
     }
 }

@@ -34,3 +34,8 @@ export enum BarcodeFormat {
     // UPC = "UPC",
     QR = 'QR',
 }
+
+export enum BarCodeValueDisplay {
+    Yes = "Y",
+    No = "N"
+}

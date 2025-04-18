@@ -76,6 +76,7 @@ export class ZplParserService implements IHtmlParserService, IHtmlWriterService 
         let br: number;
         // let bo: string;
         let barcode: ZplBarcode;
+        let displayValue: boolean = false;
 
         //let a: number;
         for (let p of parts) {
@@ -99,7 +100,7 @@ export class ZplParserService implements IHtmlParserService, IHtmlWriterService 
                     break;
                 case "AA": //Ax x=fontname
                 case "A0":
-                case "AB":  {
+                case "AB": {
                     fontName = command[1];
                     rotation = getSetValue(fields[0], 'N');
                     let defaultFontWidth = 15;
@@ -174,17 +175,26 @@ export class ZplParserService implements IHtmlParserService, IHtmlWriterService 
                     bh = parseInt(getSetValue(fields[2], "10"));
                     break;
                 case "BC":
+                case "BE":
                     bc = true;
-                    // bo = getSetValue(fields[0], 'N');
+                    displayValue = displayValue || (fields[2] === "Y");
                     barcode = new ZplBarcode();
                     barcode.style.position = "absolute";
                     barcode.style.left = x + "px";
                     barcode.style.top = y + "px";
-                    barcode.setAttribute("type", "CODE128");
+                    if(command == "BC") {
+                        barcode.setAttribute("type", "CODE128");
+                    } else {
+                        barcode.setAttribute("type", "EAN13");
+                        
+                    }
+                    barcode.setAttribute("displayValue", displayValue.toString());
+                    barcode.displayValue = displayValue;
                     if (bw)
                         barcode.setAttribute("width", bw.toString());
                     if (br)
                         barcode.setAttribute("ratio", br.toString());
+
                     barcode.setAttribute("height", getSetValue(fields[1], bh).toString());
                     break;
                 case "BQ":
@@ -221,9 +231,10 @@ export class ZplParserService implements IHtmlParserService, IHtmlWriterService 
                         text.setAttribute("font-height", fontHeight.toString());
                         text.setAttribute("font-width", fontWidth.toString());
                         text.setAttribute("content", fieldString);
-                        if (rotation) {
-                            this.createTransform(rotation, text);
-                        }
+                        text.setAttribute("rotation", rotation);
+                        // if (rotation) {
+                        //     this.createTransform(rotation, text);
+                        // }
                         designItems.push(DesignItem.createDesignItemFromInstance(text, serviceContainer, instanceServiceContainer));
                     }
                     break;

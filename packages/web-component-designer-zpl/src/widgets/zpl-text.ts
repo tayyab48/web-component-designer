@@ -56,32 +56,30 @@ export class ZplText extends BaseCustomWebComponentConstructorAppend {
         this._text.innerHTML = this.content;
         this._text.style.transformOrigin = "0 0";
 
-        const rotationDegrees = this.getRotationDegrees();
-
         switch (this.fontName) {
             case FontNames.Default_Font_0:
                 this._text.style.fontSize = "9px";
                 this._text.style.fontFamily = "RobotoCn, Verdana";
                 this._text.style.fontKerning = "none";
-                // this._text.style.transform = "scaleX(" + this.fontWidth / 9 + ") scaleY(" + this.fontHeight / 9 + ") translate(0px, -3px)";
-                this._text.style.transform =
-                    `rotate(${rotationDegrees}deg) scaleX(${this.fontWidth / 9}) scaleY(${this.fontHeight / 9}) translate(0px, -3px)`;
+                this._text.style.transform = "scaleX(" + this.fontWidth / 9 + ") scaleY(" + this.fontHeight / 9 + ") translate(0px, -3px)";
                 break;
             case FontNames.Default_Font_1:
                 this._text.style.fontSize = "9px";
                 this._text.style.fontFamily = "monospace";
                 this._text.style.transform = "scaleX(" + this.fontWidth / 5 + ") scaleY(" + this.fontHeight / 8 + ") translate(0px, -3px)";
-                this._text.style.transform = `rotate(${rotationDegrees}deg) scaleX(${this.fontWidth / 5}) scaleY(${this.fontHeight / 8}) translate(0px, -3px)`;
                 break;
             case FontNames.Default_Font_Utf8:
                 this._text.style.fontSize = "9px";
                 this._text.style.fontFamily = "RobotoCn, Verdana";
                 this._text.style.fontKerning = "none";
-                // this._text.style.transform = "scaleX(" + this.fontWidth / 9 + ") scaleY(" + this.fontHeight / 9 + ") translate(0px, -3px)";
-                this._text.style.transform =
-                    `rotate(${rotationDegrees}deg) scaleX(${this.fontWidth / 9}) scaleY(${this.fontHeight / 9}) translate(0px, -3px)`;
+                this._text.style.transform = "scaleX(" + this.fontWidth / 9 + ") scaleY(" + this.fontHeight / 9 + ") translate(0px, -3px)";
                 break;
         }
+
+        if (this.rotation) {
+            this.createTransform(this.rotation, this._text);
+        }
+
         this.style.width = '';
         this.style.height = '';
         requestAnimationFrame(() => {
@@ -101,53 +99,34 @@ export class ZplText extends BaseCustomWebComponentConstructorAppend {
     }
 
     private buildZplFontCommand(): string {
-        const zplRotation = this.getZplRotationCode();
-
+        let currentRotation = this.rotation || 'N';
         switch (this.fontName) {
             case FontNames.Default_Font_Utf8:
-                return `^CI28^A0${zplRotation},${this.fontHeight},${this.fontWidth}`;
+                return `^CI28^A0${currentRotation},${this.fontHeight},${this.fontWidth}`;
             default:
-                return `^A${this.fontName}${zplRotation},${this.fontHeight},${this.fontWidth}`;
+                return `^A${this.fontName}${currentRotation},${this.fontHeight},${this.fontWidth}`;
         }
     }
 
-    private getZplRotationCode(): string {
-        switch ((this.rotation || '').toLowerCase()) {
-            case "normal":
-            case "0":
-                return "N";
-            case "90":
-            case "rotated":
-                return "R";
-            case "180":
-            case "inverted":
-                return "I";
-            case "270":
-            case "bottom-up":
-                return "B";
+    private createTransform(rotation: string, el: HTMLElement) {
+        switch (rotation) {
+            case 'R':
+                el.style.transform += ' rotate(90deg) translateY(-100%)';
+                el.style.transformOrigin = '0% 0%';
+                break;
+            case 'I':
+                el.style.transform += ' rotate(180deg)';
+                el.style.transformOrigin = '50% 50%';
+                break;
+            case 'B':
+                el.style.transform += ' rotate(270deg)';
+                el.style.transformOrigin = '100% 100%';
+                break;
             default:
-                return "N";
+                break;
         }
     }
-
-    private getRotationDegrees(): number {
-        switch ((this.rotation || '').toLowerCase()) {
-            case "90":
-            case "r":
-            case "rotated":
-                return 90;
-            case "180":
-            case "i":
-            case "inverted":
-                return 180;
-            case "270":
-            case "b":
-            case "bottom-up":
-                return 270;
-            default:
-                return 0;
-        }
-    }
+    
     
 }
 
